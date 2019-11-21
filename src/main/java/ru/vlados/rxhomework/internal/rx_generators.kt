@@ -103,6 +103,11 @@ fun getUsersFromSource2(): Flowable<User> {
 fun withError(): Flowable<Int> =
     Flowable.error<Int>(RuntimeException("What happens?"))
         .startWithArray(1, 2, 3, 4)
+        .doOnNext {
+            if (it == 2){
+                throw RuntimeException()
+            }
+        }
         .subscribeOn(Schedulers.io())
 
 fun forTest(): Flowable<Int> {
