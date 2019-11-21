@@ -1,34 +1,55 @@
 @file:JvmName("Main")
+
 package ru.vlados.rxhomework
 
 import io.reactivex.Flowable
 import ru.vlados.rxhomework.internal.Permission
+import ru.vlados.rxhomework.internal.getUsersFromSource1
+import ru.vlados.rxhomework.internal.getUsersFromSource2
+import java.util.concurrent.TimeUnit
 
 // flatMap users to permissions,
 // distinct their
 fun task1(): Flowable<Permission> {
     // return getUsersFromSource1()...
-    TODO()
+    return getUsersFromSource1()
+            .flatMapIterable {
+                it.permissions
+            }
+            .distinct()
 }
 
 // flatMap users to permissions with random delay,
 // distinct their
 fun task2(): Flowable<Permission> {
     // return getUsersFromSource2()...
-    TODO()
+    return getUsersFromSource2()
+            .flatMap {
+                Flowable.fromIterable(it.permissions)
+                        .delay((1000..4000).random().toLong(), TimeUnit.MILLISECONDS)
+            }
+            .distinct()
 }
 
 // concatMap users to permissions with random delay,
 // distinct their
 fun task3(): Flowable<Permission> {
     // return getUsersFromSource2()...
-    TODO()
+    return getUsersFromSource2()
+            .delay((1000..4000).random().toLong(), TimeUnit.MILLISECONDS)
+            .concatMapIterable {
+                it.permissions
+            }
+            .distinct()
 }
 
 // map user from different sources to usernames,
 // merge their
 fun task4(): Flowable<String> {
-    TODO()
+    return Flowable.merge(getUsersFromSource1(), getUsersFromSource2())
+            .map {
+                it.username
+            }
 }
 
 // implement 2 times retrying
