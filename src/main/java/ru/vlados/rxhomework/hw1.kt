@@ -53,11 +53,11 @@ fun task4(): Flowable<String> {
 // on 3rd time throw error
 fun task5(): Flowable<Int> {
     return withError().retryWhen { errors ->
-        errors.zipWith(1..2) { e, i -> e to i }
+        errors.zipWith(1..3) { e, i -> e to i }
             .flatMap { just(it).delay(2 * it.second.toLong(), TimeUnit.SECONDS) }
             .map {
                 when (it.second) {
-                    2 -> throw it.first
+                    3 -> throw it.first
                     else -> it
                 }
             }
@@ -69,7 +69,7 @@ fun main() {
 //    println()
 //
 //    task2().blockingForEach { println(it) }
-//    println()
+//    println(
 //
 //    task3().blockingForEach { println(it) }
 //    println()
