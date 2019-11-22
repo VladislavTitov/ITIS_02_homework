@@ -1,6 +1,9 @@
 package ru.vlados.rxhomework
 
 import org.junit.Test
+import ru.vlados.rxhomework.internal.forTest
+import ru.vlados.rxhomework.internal.forTestWithError
+import java.lang.IllegalArgumentException
 
 class HwTest {
 
@@ -11,7 +14,11 @@ class HwTest {
     //     chain is completed
     @Test
     fun task6() {
-        // forTest().test()
+        forTest().test().await()
+            .assertValueAt(0, 5)
+            .assertValueAt(2, 1)
+            .assertNoErrors()
+            .assertComplete()
     }
 
     // make sure that
@@ -19,7 +26,9 @@ class HwTest {
     //     type of error is IllegalArgumentException
     @Test
     fun task7() {
-        // forTestWithError().test()
+        forTestWithError().test().await()
+            .assertValueSequence(listOf(1, 2, 3, 4))
+            .assertError(IllegalArgumentException::class.java)
     }
 
 }
