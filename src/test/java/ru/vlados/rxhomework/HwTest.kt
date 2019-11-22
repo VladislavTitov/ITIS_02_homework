@@ -1,6 +1,10 @@
 package ru.vlados.rxhomework
 
+import io.reactivex.plugins.RxJavaPlugins
+import io.reactivex.schedulers.Schedulers
 import org.junit.Test
+import ru.vlados.rxhomework.internal.forTest
+import ru.vlados.rxhomework.internal.forTestWithError
 
 class HwTest {
 
@@ -11,7 +15,11 @@ class HwTest {
     //     chain is completed
     @Test
     fun task6() {
-        // forTest().test()
+        forTest().test()
+            .assertValueAt(0, 5)
+            .assertValueAt(2, 1)
+            .assertComplete()
+            .assertNoErrors()
     }
 
     // make sure that
@@ -19,7 +27,15 @@ class HwTest {
     //     type of error is IllegalArgumentException
     @Test
     fun task7() {
-        // forTestWithError().test()
+
+        RxJavaPlugins.setIoSchedulerHandler {
+            Schedulers.trampoline()
+        }
+
+        forTestWithError().subscribeOn(Schedulers.io())
+            .test()
+            .assertValues(1, 2, 3, 4)
+            .assertError(IllegalArgumentException::class.java)
     }
 
 }
